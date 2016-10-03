@@ -6,7 +6,7 @@ class MetadataPersistenceService:
 
     def load(self, sha_hash):
         if sha_hash == "test_hash":
-            result = MetadataEO(sha_hash, time.time(), 1000000)
+            result = MetadataEO(sha_hash, time.time(), 100)
         elif sha_hash == "test_hash_expired":
             result = MetadataEO(sha_hash, time.time()-100, 50)
         else:

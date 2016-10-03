@@ -8,7 +8,7 @@ class MetadataEO(AlchemyConfig.Base):
     __tablename__ = "Metadata"
 
     sha_hash = Column(String, primary_key=True)
-    timestamp = Column(Integer)
+    timestamp = Column(DateTime)
     lifespan = Column(Integer)
 
     def __init__(self, sha_hash, timestamp, lifespan):

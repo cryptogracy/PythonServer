@@ -16,7 +16,6 @@ class MetadataPersistenceService:
         except NoResultFound:
             raise FileNotFoundError("No file was found for provided hash.")
 
-
     def save(self, metadata):
         try:
             self.session.add(metadata)
@@ -28,7 +27,11 @@ class MetadataPersistenceService:
             self.session.rollback()
             raise
 
-
     def save_values(self, sha_hash, timestamp, lifespan):
         metadata = MetadataEO(sha_hash, timestamp, lifespan)
         self.save(metadata)
+
+    def delete(self, sha_hash):
+        metadata = self.load(sha_hash)
+        self.session.delete(metadata)
+

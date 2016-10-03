@@ -1,5 +1,5 @@
 
-import time
+import datetime
 
 
 class ApiService:
@@ -10,13 +10,20 @@ class ApiService:
 
     def load_file(self, sha_hash):
         metadata = self.metadata_service.load(sha_hash)
-        if metadata.timestamp + metadata.lifespan < time.time():
+        if metadata.timestamp + datetime.timedelta(minutes=metadata.lifespan) < datetime.datetime.now():
             raise FileExpiredError("The requested file is expired.")
-        file = self.file_service.load(sha_hash)
-        return metadata, file
+        file_content = self.file_service.load(sha_hash)
+        return metadata, file_content
 
-    def save_file(self, file, sha_hash, lifespan):
-        pass
+    def save_file(self, sha_hash, file_content, lifespan):
+        # TODO: test whether hash fits to file
+        now = datetime.datetime.now()
+        self.metadata_service.save_values(sha_hash, now, lifespan)
+        try:
+            self.file_service.save(sha_hash, file_content)
+        except:
+            self.metadata_service.delete_by_hash(sha_hash)
+            raise
 
 
 class FileExpiredError(Exception):
